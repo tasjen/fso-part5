@@ -1,3 +1,12 @@
+ul {
+  list-style: none;
+  padding-left: 0;
+}
+
+p {
+  margin:0;
+}
+
 .message {
   color: green;
   background: lightgrey;
@@ -16,4 +25,12 @@
   border-radius: 5px;
   padding: 10px;
   margin-bottom: 10px;
+}
+
+.blog {
+  border: 1px solid black;
+  border-width: 10;
+  margin-bottom: 5px;
+  padding-left: 2px;
+  padding-top: 10px;
 }
