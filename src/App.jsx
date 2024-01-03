@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import blogService from './services/blogs';
 import loginService from './services/login';
 import Blog from './components/Blog';
+import Notification from './components/Notification';
 
 const App = () => {
   const [blogs, setBlogs] = useState([]);
@@ -11,7 +12,7 @@ const App = () => {
   const [title, setTitle] = useState('');
   const [author, setAuthor] = useState('');
   const [url, setUrl] = useState('');
-
+  const [notification, setNotification] = useState({ text: '', error: false });
 
   useEffect(() => {
     blogService.getAll().then((blogs) => setBlogs(blogs));
@@ -20,7 +21,6 @@ const App = () => {
     if (loggedUser) {
       const user = JSON.parse(loggedUser);
       setUser(user);
-      blogService.setToken(user.token);
     }
   }, []);
 
@@ -33,16 +33,16 @@ const App = () => {
         password,
       });
 
-      window.localStorage.setItem('loggedUser', JSON.stringify(user));
+      localStorage.setItem('loggedUser', JSON.stringify(user));
       setUser(user);
       setUsername('');
       setPassword('');
     } catch (err) {
-      setErrorMessage(err.message);
-      setTimeout(() => {
-        setErrorMessage(null);
-      }, 5000);
+      setNotification({ text: err.message, error: true });
     }
+    setTimeout(() => {
+      setNotification({ text: '', error: false });
+    }, 5000);
   };
 
   const handleLogOut = () => {
@@ -50,18 +50,32 @@ const App = () => {
     localStorage.clear();
   };
 
-  const handleNewBlog = () => {
-    blogService.create({title, author, url})
-    setTitle('');
-    setAuthor('');
-    setUrl('');
-  }
+  const handleNewBlog = async (event) => {
+    event.preventDefault();
+    try {
+      const newBlog = await blogService.create({ title, author, url });
+      setBlogs([...blogs, newBlog]);
+      setTitle('');
+      setAuthor('');
+      setUrl('');
+      setNotification({
+        text: `a new blog ${title} by ${author} added`,
+        error: false,
+      });
+    } catch (err) {
+      setNotification({ text: err.message, error: true });
+    }
+    setTimeout(() => {
+      setNotification({ text: '', error: false });
+    }, 5000);
+  };
 
   return (
     <>
       {user === null ? (
         <form onSubmit={handleLogIn}>
           <h1>log in to application</h1>
+          <Notification notification={notification} />
           <div>
             <label htmlFor={'username'}>username</label>
             <input
@@ -88,6 +102,7 @@ const App = () => {
       ) : (
         <>
           <h2>blogs</h2>
+          <Notification notification={notification} />
           <span>{user.name} logged in</span>
           <button onClick={handleLogOut}>logout</button>
           <h2>create new</h2>
