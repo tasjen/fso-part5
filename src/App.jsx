@@ -3,58 +3,14 @@ import blogService from './services/blogs';
 import loginService from './services/login';
 import Blog from './components/Blog';
 import Notification from './components/Notification';
-import Togglable from './components/Togglable';
+import BlogForm from './components/BlogForm';
 
 const App = () => {
   const [blogs, setBlogs] = useState([]);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [user, setUser] = useState(null);
-  const [title, setTitle] = useState('');
-  const [author, setAuthor] = useState('');
-  const [url, setUrl] = useState('');
   const [notification, setNotification] = useState({ text: '', error: false });
-
-  const blogForm = () => {
-    return (
-      <>
-        <h2>create new</h2>
-        <form onSubmit={handleNewBlog}>
-          <div>
-            <label htmlFor={'title'}>title</label>
-            <input
-              id={'title'}
-              value={title}
-              onChange={({ target }) => {
-                setTitle(target.value);
-              }}
-            />
-          </div>
-          <div>
-            <label htmlFor={'author'}>author</label>
-            <input
-              id={'author'}
-              value={author}
-              onChange={({ target }) => {
-                setAuthor(target.value);
-              }}
-            />
-          </div>
-          <div>
-            <label htmlFor={'url'}>url</label>
-            <input
-              id={'url'}
-              value={url}
-              onChange={({ target }) => {
-                setUrl(target.value);
-              }}
-            />
-          </div>
-          <button type={'submit'}>create</button>
-        </form>
-      </>
-    );
-  };
 
   const logInForm = () => {
     return (
@@ -122,16 +78,12 @@ const App = () => {
     localStorage.clear();
   };
 
-  const handleNewBlog = async (event) => {
-    event.preventDefault();
+  const addBlog = async (blogObject) => {
     try {
-      const newBlog = await blogService.create({ title, author, url });
+      const newBlog = await blogService.create(blogObject);
       setBlogs([...blogs, newBlog]);
-      setTitle('');
-      setAuthor('');
-      setUrl('');
       setNotification({
-        text: `a new blog ${title} by ${author} added`,
+        text: `a new blog ${newBlog.title} by ${newBlog.author} added`,
         error: false,
       });
     } catch (err) {
@@ -154,8 +106,7 @@ const App = () => {
             {user.name} logged in
             <button onClick={handleLogOut}>logout</button>
           </div>
-          <Togglable buttonLabel={'new blog'}>{blogForm()}</Togglable>
-
+          <BlogForm addBlog={addBlog} />
           {blogs.map((blog) => (
             <Blog key={blog.id} blog={blog} />
           ))}
