@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-const Blog = ({ blog, updateBlog }) => {
+const Blog = ({ blog, removeBlog, updateBlog }) => {
   const [detailVisible, setDetailVisible] = useState(false);
 
   const toggleDetail = () => {
@@ -23,6 +23,7 @@ const Blog = ({ blog, updateBlog }) => {
         <p>{blog.url}</p>
         <p>likes {blog.likes}<button onClick={handleLikes}>like</button></p>
         <p>{blog.user.name}</p>
+        <button onClick={() => removeBlog(blog)}>remove</button>
       </div>
     </li>
   );
