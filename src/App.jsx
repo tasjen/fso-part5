@@ -94,6 +94,18 @@ const App = () => {
     }, 5000);
   };
 
+  const updateBlog = async (blogObject) => {
+    try {
+      const updatedBlog = await blogService.update(blogObject);
+      setBlogs(blogs.map(e => e.id !== updatedBlog.id ? e : updatedBlog))
+    } catch (err) {
+      setNotification({ text: err.message, error: true });
+      setTimeout(() => {
+        setNotification({ text: '', error: false });
+      }, 5000);
+    }
+  }
+
   return (
     <>
       {user === null ? (
@@ -109,7 +121,7 @@ const App = () => {
           <BlogForm addBlog={addBlog} />
           <ul>
             {blogs.map((blog) => (
-              <Blog key={blog.id} blog={blog} />
+              <Blog key={blog.id} blog={blog} updateBlog={updateBlog} />
             ))}
           </ul>
         </>

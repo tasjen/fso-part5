@@ -1,11 +1,15 @@
 import { useState } from 'react';
 
-const Blog = ({ blog }) => {
+const Blog = ({ blog, updateBlog }) => {
   const [detailVisible, setDetailVisible] = useState(false);
 
   const toggleDetail = () => {
     setDetailVisible(!detailVisible);
   };
+
+  const handleLikes = () => {
+    updateBlog({...blog, likes: blog.likes + 1});
+  }
 
   return (
     <li className='blog'>
@@ -17,7 +21,7 @@ const Blog = ({ blog }) => {
       </p>
       <div style={{ display: detailVisible ? '' : 'none' }}>
         <p>{blog.url}</p>
-        <p>likes {blog.likes}<button>like</button></p>
+        <p>likes {blog.likes}<button onClick={handleLikes}>like</button></p>
         <p>{blog.user.name}</p>
       </div>
     </li>
