@@ -1,6 +1,6 @@
 import React from "react";
 import "@testing-library/jest-dom";
-import { cleanup, render, screen } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import Blog from "./Blog";
 
@@ -16,11 +16,10 @@ describe("<Blog />", () => {
     },
   };
   const user = userEvent.setup();
+  const mockHandler = jest.fn();
 
   beforeEach(() => {
-    cleanup();
-    user;
-    container = render(<Blog blog={blog} />).container;
+    container = render(<Blog blog={blog} updateBlog={mockHandler}/>).container;
   });
 
   it("By default, renders only blog's title and author", () => {
@@ -34,7 +33,7 @@ describe("<Blog />", () => {
     expect(userName).not.toBeVisible();
   });
 
-  it("Renders blog's URL and number of likes when view button is clicked", async () => {
+  it("Renders blog's URL and number of likes when `view` button is clicked", async () => {
     const viewButton = screen.getByText("view");
 
     await user.click(viewButton);
@@ -47,5 +46,16 @@ describe("<Blog />", () => {
     expect(url).toBeVisible();
     expect(likes).toBeVisible();
     expect(userName).toBeVisible();
+  });
+
+  it('handleLikes event is fired twice if the `like` button is clicked twice', async () => {
+    const viewButton = screen.getByText("view");
+    await user.click(viewButton);
+
+    const likesButton = screen.getByText('like');
+    await user.click(likesButton);
+    await user.click(likesButton);
+
+    expect(mockHandler.mock.calls).toHaveLength(2);
   });
 });
