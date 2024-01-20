@@ -15,7 +15,7 @@ const Blog = ({ blog, removeBlog, updateBlog }) => {
     <li className="blog">
       <p>
         {blog.title} {blog.author}
-        <button onClick={toggleDetail}>
+        <button onClick={toggleDetail} className='view-button'>
           {detailVisible ? 'hide' : 'view'}
         </button>
       </p>
