@@ -16,6 +16,13 @@ it("By default, renders only blog's title and author", () => {
 
   render(<Blog blog={blog} />);
 
-  const element = screen.getByText("123 456");
-  expect(element).toBeDefined();
+  const titleAndAuthor = screen.getByText("123 456");
+
+  const url = screen.getByText("789");
+  const likes = screen.getByText("likes 0");
+  const userName = screen.getByText("abc");
+  expect(titleAndAuthor).toBeVisible();
+  expect(url).not.toBeVisible();
+  expect(likes).not.toBeVisible();
+  expect(userName).not.toBeVisible();
 });
