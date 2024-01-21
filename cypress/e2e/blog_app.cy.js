@@ -59,6 +59,11 @@ describe("Blog app", () => {
         cy.get(".like-button").click();
         cy.get(".like-count").should("have.text", "likes 1");
       });
+      it("User who created a blog can delete it", () => {
+        cy.contains("view").click();
+        cy.get(".remove-button").click();
+        cy.get("html").should("not.contain", 'test_title test_author');
+      });
     });
   });
 });
