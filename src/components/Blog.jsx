@@ -22,8 +22,8 @@ const Blog = ({ blog, removeBlog, updateBlog }) => {
       <div style={{ display: detailVisible ? '' : 'none' }}>
         <p>{blog.url}</p>
         <p>
-          likes {blog.likes}
-          <button onClick={handleLikes}>like</button>
+          <span className='like-count'>likes {blog.likes}</span>
+          <button className='like-button' onClick={handleLikes}>like</button>
         </p>
         <p>{blog.user.name}</p>
         <button onClick={() => removeBlog(blog)}>remove</button>

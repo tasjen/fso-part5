@@ -22,6 +22,24 @@ Cypress.Commands.add("login", ({ username, password }) => {
   });
 });
 
+Cypress.Commands.add("addBlog", ({ title, author, url }) => {
+  cy.request({
+    method: "POST",
+    url: "http://localhost:3003/api/blogs",
+    body: {
+      title,
+      author,
+      url,
+    },
+    headers: {
+      Authorization: `Bearer ${
+        JSON.parse(localStorage.getItem("loggedUser")).token
+      }`,
+    },
+  });
+  cy.visit("http://localhost:5173");
+});
+
 //
 // -- This is a child command --
 // Cypress.Commands.add('drag', { prevSubject: 'element'}, (subject, options) => { ... })

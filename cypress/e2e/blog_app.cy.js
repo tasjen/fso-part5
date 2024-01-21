@@ -37,13 +37,28 @@ describe("Blog app", () => {
     });
 
     it("A blog can be created", () => {
-      cy.contains('create new blog').click();
-      cy.get('input#title').type('test_title');
-      cy.get('input#author').type('test_author');
-      cy.get('input#url').type('test_url');
+      cy.contains("create new blog").click();
+      cy.get("input#title").type("test_title");
+      cy.get("input#author").type("test_author");
+      cy.get("input#url").type("test_url");
       cy.get('button[type="submit"]').click();
-      cy.get('html').should('contain', 'test_title test_author')
-      cy.get('.message').should('be.visible');
+      cy.get("html").should("contain", "test_title test_author");
+      cy.get(".message").should("be.visible");
+    });
+
+    describe("and when there is a blog", () => {
+      beforeEach(() => {
+        cy.addBlog({
+          title: "test_title",
+          author: "test_author",
+          url: "test_url",
+        });
+      });
+      it("User can like a blog", () => {
+        cy.contains("view").click();
+        cy.get(".like-button").click();
+        cy.get(".like-count").should("have.text", "likes 1");
+      });
     });
   });
 });
