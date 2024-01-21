@@ -54,15 +54,31 @@ describe("Blog app", () => {
           url: "test_url",
         });
       });
-      it("User can like a blog", () => {
+      it("user can like a blog", () => {
         cy.contains("view").click();
         cy.get(".like-button").click();
         cy.get(".like-count").should("have.text", "likes 1");
       });
-      it("User who created a blog can delete it", () => {
+      it("user who created a blog can delete it", () => {
         cy.contains("view").click();
         cy.get(".remove-button").click();
-        cy.get("html").should("not.contain", 'test_title test_author');
+        cy.get("html").should("not.contain", "test_title test_author");
+      });
+      it("only the creator can see the delete button of a blog", () => {
+        const otherUser = {
+          name: "test_name2",
+          username: "test_username2",
+          password: "test_password2",
+        };
+        cy.request("POST", "http://localhost:3003/api/users/", otherUser);
+        cy.visit("http://localhost:5173");
+        cy.login({
+          username: otherUser.username,
+          password: otherUser.password,
+        });
+
+        cy.contains("view").click();
+        cy.get(".remove-button").should('not.exist');
       });
     });
   });

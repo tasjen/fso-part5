@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-const Blog = ({ blog, removeBlog, updateBlog }) => {
+const Blog = ({ user, blog, removeBlog, updateBlog }) => {
   const [detailVisible, setDetailVisible] = useState(false)
 
   const toggleDetail = () => {
@@ -15,18 +15,24 @@ const Blog = ({ blog, removeBlog, updateBlog }) => {
     <li className="blog">
       <p>
         {blog.title} {blog.author}
-        <button onClick={toggleDetail} className='view-button'>
+        <button onClick={toggleDetail} className="view-button">
           {detailVisible ? 'hide' : 'view'}
         </button>
       </p>
       <div style={{ display: detailVisible ? '' : 'none' }}>
         <p>{blog.url}</p>
         <p>
-          <span className='like-count'>likes {blog.likes}</span>
-          <button className='like-button' onClick={handleLikes}>like</button>
+          <span className="like-count">likes {blog.likes}</span>
+          <button className="like-button" onClick={handleLikes}>
+            like
+          </button>
         </p>
         <p>{blog.user.name}</p>
-        <button className='remove-button' onClick={() => removeBlog(blog)}>remove</button>
+        {user.name === blog.user.name && (
+          <button className="remove-button" onClick={() => removeBlog(blog)}>
+            remove
+          </button>
+        )}
       </div>
     </li>
   )
