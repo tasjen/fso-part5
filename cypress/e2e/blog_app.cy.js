@@ -78,7 +78,42 @@ describe("Blog app", () => {
         });
 
         cy.contains("view").click();
-        cy.get(".remove-button").should('not.exist');
+        cy.get(".remove-button").should("not.exist");
+      });
+    });
+    describe("when there are more than one blog", () => {
+      beforeEach(() => {
+        const firstBlog = {
+          title: "test_title1",
+          author: "test_author1",
+          url: "test_url1",
+        };
+        const secondBlog = {
+          title: "test_title2",
+          author: "test_author2",
+          url: "test_url2",
+        };
+        cy.addBlog(firstBlog);
+        cy.addBlog(secondBlog);
+      });
+      it("blogs are ordered according to likes with the blog with the most likes being first", () => {
+        cy.contains("test_title1 test_author1").parent().as("firstBlog");
+        cy.contains("test_title2 test_author2").parent().as("secondBlog");
+
+        cy.get("@secondBlog").find(".view-button").click();
+        cy.get("@secondBlog").find(".like-button").click();
+
+        cy.get("@secondBlog").contains("likes 1");
+        cy.get('.blog').eq(0).should('contain', 'test_title2 test_author2');
+
+        cy.get("@firstBlog").find(".view-button").click();
+        cy.get("@firstBlog").find(".like-button").click();
+
+        cy.get("@firstBlog").contains("likes 1");
+        cy.get("@firstBlog").find(".like-button").click();
+
+        cy.get("@firstBlog").contains("likes 1");
+        cy.get('.blog').eq(0).should('contain', 'test_title1 test_author1');
       });
     });
   });
