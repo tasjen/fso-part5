@@ -1,17 +1,18 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useContext } from 'react'
 import blogService from './services/blogs'
 import loginService from './services/login'
 import Blog from './components/Blog'
 import Notification from './components/Notification'
 import BlogForm from './components/BlogForm'
 import Togglable from './components/Togglable'
+import { NotificationContext } from './context/NotificationContextProvider'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
-  const [notification, setNotification] = useState({ text: '', error: false })
+  const [notification, showNotification] = useContext(NotificationContext);
 
   const blogFormRef = useRef()
 
@@ -69,11 +70,8 @@ const App = () => {
       setUsername('')
       setPassword('')
     } catch (err) {
-      setNotification({ text: err.message, error: true })
+      showNotification({ text: err.message, error: true })
     }
-    setTimeout(() => {
-      setNotification({ text: '', error: false })
-    }, 5000)
   }
 
   const handleLogOut = () => {
@@ -85,17 +83,14 @@ const App = () => {
     try {
       const newBlog = await blogService.create(blogObject)
       setBlogs([...blogs, newBlog])
-      setNotification({
+      showNotification({
         text: `a new blog ${newBlog.title} by ${newBlog.author} added`,
         error: false,
       })
       blogFormRef.current.toggleVisible()
     } catch (err) {
-      setNotification({ text: err.message, error: true })
+      showNotification({ text: err.message, error: true })
     }
-    setTimeout(() => {
-      setNotification({ text: '', error: false })
-    }, 5000)
   }
 
   const updateBlog = async (blogObject) => {
@@ -103,10 +98,7 @@ const App = () => {
       const updatedBlog = await blogService.update(blogObject)
       setBlogs(blogs.map((e) => (e.id !== updatedBlog.id ? e : updatedBlog)))
     } catch (err) {
-      setNotification({ text: err.message, error: true })
-      setTimeout(() => {
-        setNotification({ text: '', error: false })
-      }, 5000)
+      showNotification({ text: err.message, error: true })
     }
   }
 
@@ -117,10 +109,7 @@ const App = () => {
         setBlogs(blogs.filter((e) => e.id !== blogObject.id))
       }
     } catch (err) {
-      setNotification({ text: err.message, error: true })
-      setTimeout(() => {
-        setNotification({ text: '', error: false })
-      }, 5000)
+      showNotification({ text: err.message, error: true })
     }
   }
 
