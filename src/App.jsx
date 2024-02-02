@@ -7,6 +7,7 @@ import Togglable from './components/Togglable'
 import NotificationContext from './context/NotificationContext'
 import UserContext from './context/UserContext'
 import LogInForm from './components/LogInForm'
+import LogOutButton from './components/LogOutButton'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
@@ -24,11 +25,6 @@ const App = () => {
       setUser(user)
     }
   }, [])
-
-  const handleLogOut = () => {
-    setUser(null)
-    localStorage.clear()
-  }
 
   const addBlog = async (blogObject) => {
     try {
@@ -74,7 +70,7 @@ const App = () => {
       <Notification notification={notification} />
       <div>
         {user.name} logged in
-        <button onClick={handleLogOut}>logout</button>
+        <LogOutButton />
       </div>
       <Togglable buttonLabel={'create new blog'} ref={blogFormRef}>
         <BlogForm addBlog={addBlog} />
