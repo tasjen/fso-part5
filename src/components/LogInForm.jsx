@@ -1,27 +1,28 @@
-import { useState, useContext } from 'react';
+import { useContext } from 'react';
 import UserContext from '../context/UserContext';
 import Notification from './Notification';
 import NotificationContext from '../context/NotificationContext';
 import loginService from '../services/login';
+import { useInput } from '../hooks';
 
 const LogInForm = () => {
   const { setUser } = useContext(UserContext);
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const { notification, showNotification } = useContext(NotificationContext);
+  const username = useInput('text');
+  const password = useInput('password');
+  const { showNotification } = useContext(NotificationContext);
 
   const handleLogIn = async (event) => {
     event.preventDefault();
     try {
       const user = await loginService.login({
-        username,
-        password,
+        username: username.value,
+        password: password.value,
       });
 
       localStorage.setItem('loggedUser', JSON.stringify(user));
       setUser(user);
-      setUsername('');
-      setPassword('');
+      username.onReset();
+      password.onReset();
     } catch (err) {
       showNotification({ text: err.message, error: true });
     }
@@ -29,27 +30,14 @@ const LogInForm = () => {
   return (
     <form onSubmit={handleLogIn}>
       <h1>log in to application</h1>
-      <Notification notification={notification} />
+      <Notification />
       <div>
         <label htmlFor={'username'}>username</label>
-        <input
-          id={'username'}
-          value={username}
-          onChange={({ target }) => {
-            setUsername(target.value);
-          }}
-        />
+        <input id={'username'} {...username} />
       </div>
       <div>
         <label htmlFor={'password'}>password</label>
-        <input
-          id={'password'}
-          type={'password'}
-          value={password}
-          onChange={({ target }) => {
-            setPassword(target.value);
-          }}
-        />
+        <input id={'password'} {...password} />
       </div>
       <button type={'submit'}>login</button>
     </form>
