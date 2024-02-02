@@ -6,12 +6,13 @@ import Notification from './components/Notification'
 import BlogForm from './components/BlogForm'
 import Togglable from './components/Togglable'
 import NotificationContext from './context/NotificationContext'
+import UserContext from './context/UserContext'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
-  const [user, setUser] = useState(null)
+  const [user, setUser] = useContext(UserContext)
   const [notification, showNotification] = useContext(NotificationContext);
 
   const blogFormRef = useRef()
