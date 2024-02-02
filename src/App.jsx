@@ -5,7 +5,7 @@ import Blog from './components/Blog'
 import Notification from './components/Notification'
 import BlogForm from './components/BlogForm'
 import Togglable from './components/Togglable'
-import { NotificationContext } from './context/NotificationContextProvider'
+import NotificationContext from './context/NotificationContext'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
