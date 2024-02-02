@@ -11,7 +11,7 @@ import LogInForm from './components/LogInForm'
 const App = () => {
   const [blogs, setBlogs] = useState([])
   const [user, setUser] = useContext(UserContext)
-  const [notification, showNotification] = useContext(NotificationContext);
+  const [notification, showNotification] = useContext(NotificationContext)
 
   const blogFormRef = useRef()
 
@@ -64,36 +64,34 @@ const App = () => {
     }
   }
 
+  if (user === null) {
+    return <LogInForm />
+  }
+
   return (
     <>
-      {user === null ? (
-        <LogInForm />
-      ) : (
-        <>
-          <h2>blogs</h2>
-          <Notification notification={notification} />
-          <div>
-            {user.name} logged in
-            <button onClick={handleLogOut}>logout</button>
-          </div>
-          <Togglable buttonLabel={'create new blog'} ref={blogFormRef}>
-            <BlogForm addBlog={addBlog} />
-          </Togglable>
-          <ul>
-            {blogs
-              .sort((a, b) => b.likes - a.likes)
-              .map((blog) => (
-                <Blog
-                  key={blog.id}
-                  blog={blog}
-                  user={user}
-                  updateBlog={updateBlog}
-                  removeBlog={removeBlog}
-                />
-              ))}
-          </ul>
-        </>
-      )}
+      <h2>blogs</h2>
+      <Notification notification={notification} />
+      <div>
+        {user.name} logged in
+        <button onClick={handleLogOut}>logout</button>
+      </div>
+      <Togglable buttonLabel={'create new blog'} ref={blogFormRef}>
+        <BlogForm addBlog={addBlog} />
+      </Togglable>
+      <ul>
+        {blogs
+          .sort((a, b) => b.likes - a.likes)
+          .map((blog) => (
+            <Blog
+              key={blog.id}
+              blog={blog}
+              user={user}
+              updateBlog={updateBlog}
+              removeBlog={removeBlog}
+            />
+          ))}
+      </ul>
     </>
   )
 }
