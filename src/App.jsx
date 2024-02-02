@@ -1,52 +1,19 @@
 import { useState, useEffect, useRef, useContext } from 'react'
 import blogService from './services/blogs'
-import loginService from './services/login'
 import Blog from './components/Blog'
 import Notification from './components/Notification'
 import BlogForm from './components/BlogForm'
 import Togglable from './components/Togglable'
 import NotificationContext from './context/NotificationContext'
 import UserContext from './context/UserContext'
+import LogInForm from './components/LogInForm'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
   const [user, setUser] = useContext(UserContext)
   const [notification, showNotification] = useContext(NotificationContext);
 
   const blogFormRef = useRef()
-
-  const logInForm = () => {
-    return (
-      <form onSubmit={handleLogIn}>
-        <h1>log in to application</h1>
-        <Notification notification={notification} />
-        <div>
-          <label htmlFor={'username'}>username</label>
-          <input
-            id={'username'}
-            value={username}
-            onChange={({ target }) => {
-              setUsername(target.value)
-            }}
-          />
-        </div>
-        <div>
-          <label htmlFor={'password'}>password</label>
-          <input
-            id={'password'}
-            type={'password'}
-            value={password}
-            onChange={({ target }) => {
-              setPassword(target.value)
-            }}
-          />
-        </div>
-        <button type={'submit'}>login</button>
-      </form>
-    )
-  }
 
   useEffect(() => {
     blogService.getAll().then((blogs) => setBlogs(blogs))
@@ -57,23 +24,6 @@ const App = () => {
       setUser(user)
     }
   }, [])
-
-  const handleLogIn = async (event) => {
-    event.preventDefault()
-    try {
-      const user = await loginService.login({
-        username,
-        password,
-      })
-
-      localStorage.setItem('loggedUser', JSON.stringify(user))
-      setUser(user)
-      setUsername('')
-      setPassword('')
-    } catch (err) {
-      showNotification({ text: err.message, error: true })
-    }
-  }
 
   const handleLogOut = () => {
     setUser(null)
@@ -117,7 +67,7 @@ const App = () => {
   return (
     <>
       {user === null ? (
-        logInForm()
+        <LogInForm />
       ) : (
         <>
           <h2>blogs</h2>
