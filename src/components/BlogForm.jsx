@@ -19,21 +19,12 @@ const BlogForm = () => {
       toggleVisible();
       const blogs = queryClient.getQueryData(['blogs']);
       queryClient.setQueryData(['blogs'], [...blogs, blogObject]);
-      showNotification({
-        text: `a new blog ${blogObject.title} by ${blogObject.author} added`,
-        error: false,
-      });
-      title.onReset();
-      author.onReset();
-      url.onReset();
+      showNotification(
+        `a new blog ${blogObject.title} by ${blogObject.author} added`
+      );
+      resetAllForms();
     },
-    onError: (error) => {
-      if (isAxiosError(error)) {
-        showNotification({ text: error.response.data.error, error: true });
-      } else {
-        showNotification({ text: error, error: true });
-      }
-    },
+    onError: (err) => showNotification(err),
   });
 
   const handleSubmit = (event) => {
@@ -45,23 +36,29 @@ const BlogForm = () => {
     });
   };
 
+  const resetAllForms = () => {
+    title.onReset();
+    author.onReset();
+    url.onReset();
+  };
+
   return (
     <>
       <h2>create new</h2>
       <form onSubmit={handleSubmit}>
         <div>
-          <label htmlFor={'title'}>title</label>
-          <input id={'title'} {...title} placeholder="title" />
+          <label htmlFor="title">title</label>
+          <input id="title" {...title} placeholder="title" />
         </div>
         <div>
-          <label htmlFor={'author'}>author</label>
-          <input id={'author'} {...author} placeholder="author" />
+          <label htmlFor="author">author</label>
+          <input id="author" {...author} placeholder="author" />
         </div>
         <div>
-          <label htmlFor={'url'}>url</label>
-          <input id={'url'} {...url} placeholder="url" />
+          <label htmlFor="url">url</label>
+          <input id="url" {...url} placeholder="url" />
         </div>
-        <button type={'submit'}>create</button>
+        <button type="submit">create</button>
       </form>
     </>
   );

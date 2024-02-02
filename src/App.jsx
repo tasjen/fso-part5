@@ -30,7 +30,7 @@ const App = () => {
         {user.name} logged in
         <LogOutButton />
       </div>
-      <Togglable buttonLabel={'create new blog'}>
+      <Togglable buttonLabel="create new blog">
         <BlogForm />
       </Togglable>
       <BlogList />

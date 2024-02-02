@@ -8,8 +8,8 @@ export const useInput = (type) => {
   };
 
   const onReset = () => {
-    setValue('')
-  }
+    setValue('');
+  };
 
   return { type, value, onChange, onReset };
 };

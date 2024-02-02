@@ -5,7 +5,7 @@ const notificationReducer = (state, action) => {
     case 'SET':
       return action.payload;
     case 'CLEAR':
-      return { text: '', error: false };
+      return null;
     default:
       return state;
   }
@@ -14,12 +14,9 @@ const notificationReducer = (state, action) => {
 const NotificationContext = createContext();
 
 export const NotificationContextProvider = (props) => {
-  const [notification, dispatch] = useReducer(notificationReducer, {
-    text: '',
-    error: false,
-  });
-  const showNotification = ({ text, error }) => {
-    dispatch({ type: 'SET', payload: { text, error } });
+  const [notification, dispatch] = useReducer(notificationReducer, null);
+  const showNotification = (notification) => {
+    dispatch({ type: 'SET', payload: notification });
     setTimeout(() => dispatch({ type: 'CLEAR' }), 5000);
   };
   return (

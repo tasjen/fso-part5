@@ -21,25 +21,30 @@ const LogInForm = () => {
 
       localStorage.setItem('loggedUser', JSON.stringify(user));
       setUser(user);
-      username.onReset();
-      password.onReset();
+      resetAllForms();
     } catch (err) {
-      showNotification({ text: err.message, error: true });
+      showNotification(err);
     }
   };
+
+  const resetAllForms = () => {
+    username.onReset();
+    password.onReset();
+  };
+
   return (
     <form onSubmit={handleLogIn}>
       <h1>log in to application</h1>
       <Notification />
       <div>
-        <label htmlFor={'username'}>username</label>
-        <input id={'username'} {...username} />
+        <label htmlFor="username">username</label>
+        <input id="username" {...username} />
       </div>
       <div>
-        <label htmlFor={'password'}>password</label>
-        <input id={'password'} {...password} />
+        <label htmlFor="password">password</label>
+        <input id="password" {...password} />
       </div>
-      <button type={'submit'}>login</button>
+      <button type="submit">login</button>
     </form>
   );
 };

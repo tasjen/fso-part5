@@ -2,11 +2,13 @@ import { useState, useContext } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import UserContext from '../context/UserContext';
 import blogService from '../services/blogs';
+import NotificationContext from '../context/NotificationContext';
 
 const Blog = ({ blog }) => {
   const { user } = useContext(UserContext);
   const [detailVisible, setDetailVisible] = useState(false);
   const queryClient = useQueryClient();
+  const { showNotification } = useContext(NotificationContext);
 
   const updateBlogMutation = useMutation({
     mutationFn: blogService.update,
@@ -17,13 +19,7 @@ const Blog = ({ blog }) => {
         blogs.map((e) => (e.id !== blogObject.id ? e : blogObject))
       );
     },
-    onError: (error) => {
-      if (isAxiosError(error)) {
-        showNotification({ text: error.response.data.error, error: true });
-      } else {
-        showNotification({ text: error, error: true });
-      }
-    },
+    onError: (err) => showNotification(err),
   });
 
   const removeBlogMutation = useMutation({
@@ -35,13 +31,7 @@ const Blog = ({ blog }) => {
         blogs.filter((e) => e.id !== blog.id)
       );
     },
-    onError: (error) => {
-      if (isAxiosError(error)) {
-        showNotification({ text: error.response.data.error, error: true });
-      } else {
-        showNotification({ text: error, error: true });
-      }
-    },
+    onError: (err) => showNotification(err),
   });
 
   const toggleDetail = () => {
