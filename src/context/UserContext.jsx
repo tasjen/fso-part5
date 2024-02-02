@@ -1,28 +1,28 @@
-import { createContext, useReducer } from 'react'
+import { createContext, useReducer } from 'react';
 
 const userReducer = (state, action) => {
   switch (action.type) {
     case 'SET':
-      return action.payload
+      return action.payload;
     default:
-      return state
+      return state;
   }
-}
+};
 
-const UserContext = createContext()
+const UserContext = createContext();
 
 export const UserContextProvider = ({ children }) => {
-  const [user, dispatch] = useReducer(userReducer, null)
+  const [user, dispatch] = useReducer(userReducer, null);
 
   const setUser = (user) => {
-    dispatch({ type: 'SET', payload: user })
-  }
+    dispatch({ type: 'SET', payload: user });
+  };
 
   return (
-    <UserContext.Provider value={[user, setUser]}>
+    <UserContext.Provider value={{ user, setUser }}>
       {children}
     </UserContext.Provider>
-  )
-}
+  );
+};
 
-export default UserContext
+export default UserContext;

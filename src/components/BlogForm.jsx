@@ -1,31 +1,58 @@
-import { useState } from 'react'
+import { useContext, useState } from 'react';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import blogService from '../services/blogs';
+import NotificationContext from '../context/NotificationContext';
+import { VisibleContext } from './Togglable';
 
-const BlogForm = ({ addBlog }) => {
-  const [title, setTitle] = useState('')
-  const [author, setAuthor] = useState('')
-  const [url, setUrl] = useState('')
+const BlogForm = () => {
+  const [title, setTitle] = useState('');
+  const [author, setAuthor] = useState('');
+  const [url, setUrl] = useState('');
+  const { showNotification } = useContext(NotificationContext);
+  const { toggleVisible } = useContext(VisibleContext);
+  const queryClient = useQueryClient();
 
-  const createBlog = (event) => {
-    event.preventDefault()
-    addBlog({ title, author, url })
-    setTitle('')
-    setAuthor('')
-    setUrl('')
-  }
+  const newBlogMutation = useMutation({
+    mutationFn: blogService.create,
+    onSuccess: (blogObject) => {
+      toggleVisible();
+      const blogs = queryClient.getQueryData(['blogs']);
+      queryClient.setQueryData(['blogs'], [...blogs, blogObject]);
+      showNotification({
+        text: `a new blog ${blogObject.title} by ${blogObject.author} added`,
+        error: false,
+      });
+      setTitle('');
+      setAuthor('');
+      setUrl('');
+    },
+    onError: (error) => {
+      if (isAxiosError(error)) {
+        showNotification({ text: error.response.data.error, error: true });
+      } else {
+        showNotification({ text: error, error: true });
+      }
+    },
+  });
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    newBlogMutation.mutate({ title, author, url });
+  };
 
   return (
     <>
       <h2>create new</h2>
-      <form onSubmit={createBlog}>
+      <form onSubmit={handleSubmit}>
         <div>
           <label htmlFor={'title'}>title</label>
           <input
             id={'title'}
             value={title}
             onChange={({ target }) => {
-              setTitle(target.value)
+              setTitle(target.value);
             }}
-            placeholder='title'
+            placeholder="title"
           />
         </div>
         <div>
@@ -34,9 +61,9 @@ const BlogForm = ({ addBlog }) => {
             id={'author'}
             value={author}
             onChange={({ target }) => {
-              setAuthor(target.value)
+              setAuthor(target.value);
             }}
-            placeholder='author'
+            placeholder="author"
           />
         </div>
         <div>
@@ -45,15 +72,15 @@ const BlogForm = ({ addBlog }) => {
             id={'url'}
             value={url}
             onChange={({ target }) => {
-              setUrl(target.value)
+              setUrl(target.value);
             }}
-            placeholder='url'
+            placeholder="url"
           />
         </div>
         <button type={'submit'}>create</button>
       </form>
     </>
-  )
-}
+  );
+};
 
-export default BlogForm
+export default BlogForm;

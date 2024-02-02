@@ -1,32 +1,32 @@
-import React from "react";
-import "@testing-library/jest-dom";
-import { render, screen } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
-import Blog from "./Blog";
+import React from 'react';
+import '@testing-library/jest-dom';
+import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import Blog from './Blog';
 
-describe("<Blog />", () => {
+describe('<Blog />', () => {
   let container;
   const blog = {
-    title: "title",
-    author: "author",
-    url: "url",
+    title: 'title',
+    author: 'author',
+    url: 'url',
     likes: 0,
     user: {
-      name: "name",
+      name: 'name',
     },
   };
   const user = userEvent.setup();
   const mockHandler = jest.fn();
 
   beforeEach(() => {
-    container = render(<Blog blog={blog} updateBlog={mockHandler}/>).container;
+    container = render(<Blog blog={blog} updateBlog={mockHandler} />).container;
   });
 
   it("By default, renders only blog's title and author", () => {
-    const titleAndAuthor = screen.getByText("title author");
-    const url = screen.getByText("url");
-    const likes = screen.getByText("likes 0");
-    const userName = screen.getByText("name");
+    const titleAndAuthor = screen.getByText('title author');
+    const url = screen.getByText('url');
+    const likes = screen.getByText('likes 0');
+    const userName = screen.getByText('name');
     expect(titleAndAuthor).toBeVisible();
     expect(url).not.toBeVisible();
     expect(likes).not.toBeVisible();
@@ -34,14 +34,14 @@ describe("<Blog />", () => {
   });
 
   it("Renders blog's URL and number of likes when `view` button is clicked", async () => {
-    const viewButton = screen.getByText("view");
+    const viewButton = screen.getByText('view');
 
     await user.click(viewButton);
 
-    const titleAndAuthor = screen.getByText("title author");
-    const url = screen.getByText("url");
-    const likes = screen.getByText("likes 0");
-    const userName = screen.getByText("name");
+    const titleAndAuthor = screen.getByText('title author');
+    const url = screen.getByText('url');
+    const likes = screen.getByText('likes 0');
+    const userName = screen.getByText('name');
     expect(titleAndAuthor).toBeVisible();
     expect(url).toBeVisible();
     expect(likes).toBeVisible();
@@ -49,7 +49,7 @@ describe("<Blog />", () => {
   });
 
   it('handleLikes event is fired twice if the `like` button is clicked twice', async () => {
-    const viewButton = screen.getByText("view");
+    const viewButton = screen.getByText('view');
     await user.click(viewButton);
 
     const likesButton = screen.getByText('like');
