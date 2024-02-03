@@ -3,13 +3,14 @@ import UserContext from '../context/UserContext';
 import Notification from './Notification';
 import NotificationContext from '../context/NotificationContext';
 import loginService from '../services/login';
-import { useInput } from '../hooks';
+import { useInput, useLocalStorage } from '../hooks';
 
 const LogInForm = () => {
-  const { setUser } = useContext(UserContext);
   const username = useInput('text');
   const password = useInput('password');
+  const { setUser } = useContext(UserContext);
   const { showNotification } = useContext(NotificationContext);
+  const loggedUser = useLocalStorage('loggedUser');
 
   const handleLogIn = async (event) => {
     event.preventDefault();
@@ -19,7 +20,7 @@ const LogInForm = () => {
         password: password.value,
       });
 
-      localStorage.setItem('loggedUser', JSON.stringify(user));
+      loggedUser.setItem(user);
       setUser(user);
       resetAllForms();
     } catch (err) {

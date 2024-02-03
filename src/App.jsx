@@ -6,15 +6,15 @@ import UserContext from './context/UserContext';
 import LogInForm from './components/LogInForm';
 import LogOutButton from './components/LogOutButton';
 import BlogList from './components/BlogList';
+import { useLocalStorage } from './hooks';
 
 const App = () => {
   const { user, setUser } = useContext(UserContext);
+  const loggedUser = useLocalStorage('loggedUser');
 
   useEffect(() => {
-    const loggedUser = localStorage.getItem('loggedUser');
     if (loggedUser) {
-      const user = JSON.parse(loggedUser);
-      setUser(user);
+      setUser(loggedUser.getItem());
     }
   }, []);
 
