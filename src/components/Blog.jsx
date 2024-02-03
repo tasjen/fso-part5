@@ -1,50 +1,24 @@
 import { useState, useContext } from 'react';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
 import UserContext from '../context/UserContext';
-import blogService from '../services/blogs';
-import NotificationContext from '../context/NotificationContext';
+import { useBlogsQuery } from '../hooks';
 
 const Blog = ({ blog }) => {
   const { user } = useContext(UserContext);
   const [detailVisible, setDetailVisible] = useState(false);
-  const queryClient = useQueryClient();
-  const { showNotification } = useContext(NotificationContext);
 
-  const updateBlogMutation = useMutation({
-    mutationFn: blogService.update,
-    onSuccess: (blogObject) => {
-      const blogs = queryClient.getQueryData(['blogs']);
-      queryClient.setQueryData(
-        ['blogs'],
-        blogs.map((e) => (e.id !== blogObject.id ? e : blogObject))
-      );
-    },
-    onError: (err) => showNotification(err),
-  });
-
-  const removeBlogMutation = useMutation({
-    mutationFn: blogService.remove,
-    onSuccess: () => {
-      const blogs = queryClient.getQueryData(['blogs']);
-      queryClient.setQueryData(
-        ['blogs'],
-        blogs.filter((e) => e.id !== blog.id)
-      );
-    },
-    onError: (err) => showNotification(err),
-  });
+  const { updateBlog, removeBlog } = useBlogsQuery();
 
   const toggleDetail = () => {
     setDetailVisible(!detailVisible);
   };
 
   const handleLikes = () => {
-    updateBlogMutation.mutate({ ...blog, likes: blog.likes + 1 });
+    updateBlog({ ...blog, likes: blog.likes + 1 });
   };
 
   const handleRemove = () => {
     if (confirm(`Remove blog ${blog.title} by ${blog.author}`)) {
-      removeBlogMutation.mutate(blog);
+      removeBlog(blog);
     }
   };
 

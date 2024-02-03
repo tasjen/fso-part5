@@ -23,7 +23,8 @@ const remove = async (blogObject) => {
   const config = {
     headers: { Authorization: `Bearer ${getToken()}` },
   };
-  return await axios.delete(`${baseUrl}/${blogObject.id}`, config);
+  await axios.delete(`${baseUrl}/${blogObject.id}`, config);
+  return blogObject.id;
 };
 
 const update = async (blogObject) => {

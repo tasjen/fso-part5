@@ -1,26 +1,18 @@
-import Blog from './Blog';
-import blogService from '../services/blogs';
-import { useQuery } from '@tanstack/react-query';
 import { useContext } from 'react';
+import { useBlogsQuery } from '../hooks';
 import NotificationContext from '../context/NotificationContext';
+import Blog from './Blog';
 
 const BlogList = () => {
   const { showNotification } = useContext(NotificationContext);
-  const blogsQuery = useQuery({
-    queryKey: ['blogs'],
-    queryFn: blogService.getAll,
-    retry: false,
-    refetchOnWindowFocus: true,
-  });
+  const { blogs, isLoading, isError, error } = useBlogsQuery();
 
-  if (blogsQuery.isLoading) {
+  if (isLoading) {
     return <div>loading data...</div>;
-  } else if (blogsQuery.isError) {
-    showNotification(blogsQuery.error);
+  } else if (isError) {
+    showNotification(error);
     return null;
   }
-
-  const blogs = blogsQuery.data;
 
   return (
     <ul>
