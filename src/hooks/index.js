@@ -71,3 +71,34 @@ export const useBlogsQuery = () => {
 
   return { blogs, addBlog, updateBlog, removeBlog, isLoading, isError, error };
 };
+
+export const useLocalStorage = (key) => {
+  const { showNotification } = useContext(NotificationContext);
+
+  const getItem = () => {
+    try {
+      const item = localStorage.getItem(key);
+      return JSON.parse(item);
+    } catch (err) {
+      showNotification(err);
+    }
+  };
+
+  const setItem = (value) => {
+    try {
+      localStorage.setItem(key, JSON.stringify(value));
+    } catch (err) {
+      showNotification(err);
+    }
+  };
+
+  const removeItem = () => {
+    try {
+      localStorage.removeItem(key);
+    } catch (err) {
+      showNotification(err);
+    }
+  };
+
+  return { getItem, setItem, removeItem };
+};
