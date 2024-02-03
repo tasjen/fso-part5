@@ -1,12 +1,11 @@
-import { useState, useContext } from 'react';
-import UserContext from '../context/UserContext';
-import { useBlogsQuery } from '../hooks';
+import { useState } from 'react';
+import { useBlogsMutation, useUserQuery } from '../hooks';
 
 const Blog = ({ blog }) => {
-  const { user } = useContext(UserContext);
+  const { user } = useUserQuery();
   const [detailVisible, setDetailVisible] = useState(false);
 
-  const { updateBlog, removeBlog } = useBlogsQuery();
+  const { updateBlog, removeBlog } = useBlogsMutation();
 
   const toggleDetail = () => {
     setDetailVisible(!detailVisible);

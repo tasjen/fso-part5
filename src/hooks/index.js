@@ -1,6 +1,7 @@
 import { useContext, useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import blogService from '../services/blogs';
+import loginService from '../services/login';
 import NotificationContext from '../context/NotificationContext';
 
 export const useInput = (type) => {
@@ -17,10 +18,50 @@ export const useInput = (type) => {
   return { type, value, onChange, onReset };
 };
 
-export const useBlogsQuery = () => {
+export const useUserQuery = () => {
+  const loggedUser = useLocalStorage('loggedUser');
+  const {
+    data: user,
+    isLoading,
+    isError,
+    error,
+  } = useQuery({
+    queryKey: ['user'],
+    queryFn: loggedUser.getItem,
+    retry: false,
+    refetchOnWindowFocus: false,
+  });
+
+  return { user, isLoading, isError, error };
+};
+
+export const useUserMutation = () => {
   const queryClient = useQueryClient();
+  const loggedUser = useLocalStorage('loggedUser');
   const { showNotification } = useContext(NotificationContext);
 
+  const { mutateAsync: logIn } = useMutation({
+    mutationFn: loginService.login,
+    onSuccess: (user) => {
+      loggedUser.setItem(user);
+      queryClient.invalidateQueries(['user']);
+    },
+    onError: (err) => showNotification(err),
+  });
+
+  const { mutate: logOut } = useMutation({
+    mutationFn: loggedUser.removeItem,
+    onSuccess: () => {
+      queryClient.resetQueries(['blogs']);
+      queryClient.invalidateQueries(['user']);
+    },
+    onError: (err) => showNotification(err),
+  });
+
+  return { logIn, logOut };
+};
+
+export const useBlogsQuery = () => {
   const {
     data: blogs,
     isLoading,
@@ -29,9 +70,15 @@ export const useBlogsQuery = () => {
   } = useQuery({
     queryKey: ['blogs'],
     queryFn: blogService.getAll,
-    retry: false,
-    refetchOnWindowFocus: true,
+    refetchOnWindowFocus: false,
   });
+
+  return { blogs, isLoading, isError, error };
+};
+
+export const useBlogsMutation = () => {
+  const queryClient = useQueryClient();
+  const { showNotification } = useContext(NotificationContext);
 
   const { mutateAsync: addBlog } = useMutation({
     mutationFn: blogService.create,
@@ -69,35 +116,21 @@ export const useBlogsQuery = () => {
     onError: (err) => showNotification(err),
   });
 
-  return { blogs, addBlog, updateBlog, removeBlog, isLoading, isError, error };
+  return { addBlog, updateBlog, removeBlog };
 };
 
 export const useLocalStorage = (key) => {
-  const { showNotification } = useContext(NotificationContext);
-
   const getItem = () => {
-    try {
-      const item = localStorage.getItem(key);
-      return JSON.parse(item);
-    } catch (err) {
-      showNotification(err);
-    }
+    const item = localStorage.getItem(key);
+    return JSON.parse(item);
   };
 
   const setItem = (value) => {
-    try {
-      localStorage.setItem(key, JSON.stringify(value));
-    } catch (err) {
-      showNotification(err);
-    }
+    localStorage.setItem(key, JSON.stringify(value));
   };
 
   const removeItem = () => {
-    try {
-      localStorage.removeItem(key);
-    } catch (err) {
-      showNotification(err);
-    }
+    localStorage.removeItem(key);
   };
 
   return { getItem, setItem, removeItem };

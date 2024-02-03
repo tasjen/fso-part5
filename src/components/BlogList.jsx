@@ -11,7 +11,7 @@ const BlogList = () => {
     return <div>loading data...</div>;
   } else if (isError) {
     showNotification(error);
-    return null;
+    return <></>;
   }
 
   return (

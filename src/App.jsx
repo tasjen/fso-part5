@@ -1,28 +1,27 @@
-import { useEffect, useContext } from 'react';
+import { useContext } from 'react';
 import Notification from './components/Notification';
 import BlogForm from './components/BlogForm';
 import Togglable from './components/Togglable';
-import UserContext from './context/UserContext';
 import LogInForm from './components/LogInForm';
 import LogOutButton from './components/LogOutButton';
 import BlogList from './components/BlogList';
-import { useLocalStorage } from './hooks';
+import { useUserQuery } from './hooks';
+import NotificationContext from './context/NotificationContext';
 
 const App = () => {
-  const { user, setUser } = useContext(UserContext);
-  const loggedUser = useLocalStorage('loggedUser');
+  const { user, isLoading, isError, error } = useUserQuery();
+  const { showNotification } = useContext(NotificationContext);
 
-  useEffect(() => {
-    if (loggedUser) {
-      setUser(loggedUser.getItem());
-    }
-  }, []);
-
-  if (user === null) {
-    return <LogInForm />;
+  if (isLoading) {
+    return <p>loading...</p>;
+  } else if (isError) {
+    showNotification(error);
+    return <></>;
   }
 
-  return (
+  return !user ? (
+    <LogInForm />
+  ) : (
     <>
       <h2>blogs</h2>
       <Notification />

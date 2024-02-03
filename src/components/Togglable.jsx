@@ -7,24 +7,22 @@ export const VisibleContext = createContext();
 const Togglable = (props) => {
   const [visible, setVisible] = useState(false);
 
-  const showWhenVisible = { display: visible ? '' : 'none' };
-  const hideWhenVisible = { display: visible ? 'none' : '' };
-
   const toggleVisible = () => {
     setVisible(!visible);
   };
 
   return (
     <div>
-      <div style={hideWhenVisible}>
+      {visible ? (
+        <div>
+          <VisibleContext.Provider value={{ toggleVisible }}>
+            {props.children}
+          </VisibleContext.Provider>
+          <button onClick={toggleVisible}>cancel</button>
+        </div>
+      ) : (
         <button onClick={toggleVisible}>{props.buttonLabel}</button>
-      </div>
-      <div style={showWhenVisible}>
-        <VisibleContext.Provider value={{ toggleVisible }}>
-          {props.children}
-        </VisibleContext.Provider>
-        <button onClick={toggleVisible}>cancel</button>
-      </div>
+      )}
     </div>
   );
 };

@@ -1,13 +1,13 @@
 import { useContext } from 'react';
 import { VisibleContext } from './Togglable';
-import { useBlogsQuery, useInput } from '../hooks';
+import { useBlogsMutation, useInput } from '../hooks';
 
 const BlogForm = () => {
   const title = useInput('text');
   const author = useInput('text');
   const url = useInput('text');
   const { toggleVisible } = useContext(VisibleContext);
-  const { addBlog } = useBlogsQuery();
+  const { addBlog } = useBlogsMutation();
 
   const handleSubmit = async (event) => {
     event.preventDefault();
