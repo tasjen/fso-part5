@@ -5,15 +5,15 @@ import { createContext } from 'react';
 export const VisibleContext = createContext();
 
 const Togglable = (props) => {
-  const [visible, setVisible] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
 
   const toggleVisible = () => {
-    setVisible(!visible);
+    setIsVisible(!isVisible);
   };
 
   return (
     <div>
-      {visible ? (
+      {isVisible ? (
         <div>
           <VisibleContext.Provider value={{ toggleVisible }}>
             {props.children}
