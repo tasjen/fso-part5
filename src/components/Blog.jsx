@@ -1,11 +1,12 @@
 import { useState } from 'react';
-import { useBlogsMutation, useUserQuery } from '../hooks';
+import { useBlogsMutation } from '../hooks';
+import { useQueryClient } from '@tanstack/react-query';
 
 const Blog = ({ blog }) => {
-  const { user } = useUserQuery();
-  const [detailVisible, setDetailVisible] = useState(false);
-
+  const queryClient = useQueryClient();
+  const user = queryClient.getQueryData(['user']);
   const { updateBlog, removeBlog } = useBlogsMutation();
+  const [detailVisible, setDetailVisible] = useState(false);
 
   const toggleDetail = () => {
     setDetailVisible(!detailVisible);

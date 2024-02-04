@@ -1,18 +1,9 @@
-import { useContext } from 'react';
-import { useBlogsQuery } from '../hooks';
-import NotificationContext from '../context/NotificationContext';
 import Blog from './Blog';
+import { useQueryClient } from '@tanstack/react-query';
 
 const BlogList = () => {
-  const { showNotification } = useContext(NotificationContext);
-  const { blogs, isLoading, isError, error } = useBlogsQuery();
-
-  if (isLoading) {
-    return <div>loading data...</div>;
-  } else if (isError) {
-    showNotification(error);
-    return <></>;
-  }
+  const queryClient = useQueryClient();
+  const blogs = queryClient.getQueryData(['blogs']) || [];
 
   return (
     <ul>

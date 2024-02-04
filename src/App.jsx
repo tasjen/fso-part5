@@ -1,23 +1,28 @@
 import { useContext } from 'react';
 import Notification from './components/Notification';
-import BlogForm from './components/BlogForm';
-import Togglable from './components/Togglable';
 import LogInForm from './components/LogInForm';
 import LogOutButton from './components/LogOutButton';
-import BlogList from './components/BlogList';
-import { useUserQuery } from './hooks';
+import { useUserQuery, useBlogsQuery } from './hooks';
 import NotificationContext from './context/NotificationContext';
+import { Outlet, useNavigate } from 'react-router-dom';
 
 const App = () => {
-  const { user, isLoading, isError, error } = useUserQuery();
+  const userQuery = useUserQuery();
+  const blogsQuery = useBlogsQuery();
+  const navigate = useNavigate();
+
   const { showNotification } = useContext(NotificationContext);
 
-  if (isLoading) {
+  if (userQuery.isLoading || blogsQuery.isLoading) {
     return <p>loading...</p>;
-  } else if (isError) {
-    showNotification(error);
+  } else if (userQuery.isError || blogsQuery.isError) {
+    showNotification(userQuery.error || blogsQuery.error);
     return <></>;
   }
+
+  const { user } = userQuery;
+  console.log(user);
+  console.log(blogsQuery.blogs);
 
   return !user ? (
     <LogInForm />
@@ -29,10 +34,7 @@ const App = () => {
         {user.name} logged in
         <LogOutButton />
       </div>
-      <Togglable buttonLabel="create new blog">
-        <BlogForm />
-      </Togglable>
-      <BlogList />
+      <Outlet />
     </>
   );
 };
