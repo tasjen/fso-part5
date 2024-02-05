@@ -1,40 +1,45 @@
-import { useContext } from 'react';
 import Notification from './components/Notification';
-import LogInForm from './components/LogInForm';
 import LogOutButton from './components/LogOutButton';
-import { useUserQuery, useBlogsQuery } from './hooks';
-import NotificationContext from './context/NotificationContext';
-import { Outlet, useNavigate } from 'react-router-dom';
+import { useLocalStorage } from './hooks';
+import { Outlet, redirect, useLoaderData } from 'react-router-dom';
+import blogService from './services/blogs';
 
-const App = () => {
-  const userQuery = useUserQuery();
-  const blogsQuery = useBlogsQuery();
-  const navigate = useNavigate();
+export const loader = (queryClient) => async () => {
+  console.log('load app');
+  const loggedUser =
+    queryClient.getQueryData(['user']) ??
+    (await queryClient.fetchQuery({
+      queryKey: ['user'],
+      queryFn: useLocalStorage('loggedUser').getItem,
+    }));
 
-  const { showNotification } = useContext(NotificationContext);
+  if (!loggedUser) return redirect('/login');
 
-  if (userQuery.isLoading || blogsQuery.isLoading) {
-    return <p>loading...</p>;
-  } else if (userQuery.isError || blogsQuery.isError) {
-    showNotification(userQuery.error || blogsQuery.error);
-    return <></>;
+  if (!queryClient.getQueryData(['blogs'])) {
+    console.log('fetch blogs');
+    await queryClient.fetchQuery({
+      queryKey: ['blogs'],
+      queryFn: blogService.getAll,
+    });
   }
 
-  const { user } = userQuery;
-  console.log(user);
-  console.log(blogsQuery.blogs);
+  return loggedUser;
+};
 
-  return !user ? (
-    <LogInForm />
-  ) : (
+const App = () => {
+  const user = useLoaderData();
+
+  console.log('render app');
+
+  return (
     <>
       <h2>blogs</h2>
       <Notification />
       <div>
-        {user.name} logged in
+        {user?.name} logged in
         <LogOutButton />
       </div>
-      <Outlet />
+      <Outlet log={console.log('render outlet')} />
     </>
   );
 };

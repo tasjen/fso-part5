@@ -1,10 +1,24 @@
-import Notification from './Notification';
+import { redirect, useNavigate } from 'react-router-dom';
+import Notification from '../components/Notification';
 import { useInput, useUserMutation } from '../hooks';
+import { useLocalStorage } from '../hooks';
+
+export const loader = (queryClient) => async () => {
+  console.log('load login');
+  const loggedUser =
+    queryClient.getQueryData(['user']) ??
+    (await queryClient.fetchQuery({
+      queryKey: ['user'],
+      queryFn: useLocalStorage('loggedUser').getItem,
+    }));
+  return loggedUser ? redirect('/') : null;
+};
 
 const LogInForm = () => {
   const username = useInput('text');
   const password = useInput('password');
   const { logIn } = useUserMutation();
+  const navigate = useNavigate();
 
   const handleLogIn = async (event) => {
     event.preventDefault();
@@ -12,10 +26,12 @@ const LogInForm = () => {
       username: username.value,
       password: password.value,
     });
+    navigate('/');
   };
 
+  console.log('render login');
   return (
-    <form onSubmit={handleLogIn}>
+    <form onSubmit={handleLogIn} method="post" action="/login">
       <h1>log in to application</h1>
       <Notification />
       <div>

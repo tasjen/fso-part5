@@ -1,6 +1,6 @@
-import Togglable from './Togglable';
-import BlogForm from './BlogForm';
-import BlogList from './BlogList';
+import Togglable from '../components/Togglable';
+import BlogForm from '../components/BlogForm';
+import BlogList from '../components/BlogList';
 
 const Index = () => {
   return (

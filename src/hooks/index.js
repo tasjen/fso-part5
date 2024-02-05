@@ -1,4 +1,4 @@
-import { useContext, useState, useMemo } from 'react';
+import { useContext, useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import blogService from '../services/blogs';
 import loginService from '../services/login';
@@ -27,7 +27,10 @@ export const useUserQuery = () => {
     error,
   } = useQuery({
     queryKey: ['user'],
-    queryFn: loggedUser.getItem,
+    queryFn: () => {
+      console.log('query user');
+      return loggedUser.getItem();
+    },
     retry: false,
     refetchOnWindowFocus: false,
   });
@@ -49,11 +52,11 @@ export const useUserMutation = () => {
     onError: (err) => showNotification(err),
   });
 
-  const { mutate: logOut } = useMutation({
+  const { mutateAsync: logOut } = useMutation({
     mutationFn: loggedUser.removeItem,
     onSuccess: () => {
       queryClient.resetQueries(['blogs']);
-      queryClient.invalidateQueries(['user']);
+      queryClient.setQueryData(['user'], null);
     },
     onError: (err) => showNotification(err),
   });
@@ -70,7 +73,6 @@ export const useBlogsQuery = () => {
   } = useQuery({
     queryKey: ['blogs'],
     queryFn: blogService.getAll,
-    refetchOnWindowFocus: false,
   });
 
   return { blogs, isLoading, isError, error };

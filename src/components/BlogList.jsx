@@ -1,14 +1,13 @@
 import Blog from './Blog';
-import { useQueryClient } from '@tanstack/react-query';
+import { useBlogsQuery } from '../hooks';
 
 const BlogList = () => {
-  const queryClient = useQueryClient();
-  const blogs = queryClient.getQueryData(['blogs']) || [];
+  const { blogs } = useBlogsQuery();
 
   return (
     <ul>
       {blogs
-        .sort((a, b) => b.likes - a.likes)
+        ?.sort((a, b) => b.likes - a.likes)
         .map((blog) => (
           <Blog key={blog.id} blog={blog} />
         ))}

@@ -1,24 +1,33 @@
 import ReactDOM from 'react-dom/client';
 import App from './App';
-import Index from './components/Home';
-import Users from './components/Users';
-import User from './components/User';
-import ErrorPage from './components/ErrorPage';
+import Index from './pages/Index';
+import Users from './pages/Users';
+import User from './pages/User';
+import ErrorPage from './pages/ErrorPage';
+import BlogPage from './pages/BlogPage';
 import './index.css';
 import { NotificationContextProvider } from './context/NotificationContext';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { RouterProvider, createBrowserRouter } from 'react-router-dom';
-import LogInForm from './components/LogInForm';
+import LogInForm from './pages/LogInForm';
+import { loader as loginLoader } from './pages/LogInForm';
+import { loader as appLoader } from './App';
 
 const queryClient = new QueryClient();
 const router = createBrowserRouter([
   {
+    path: '/login',
+    element: <LogInForm />,
+    loader: loginLoader(queryClient),
+  },
+  {
     path: '/',
     element: <App />,
+    loader: appLoader(queryClient),
     errorElement: <ErrorPage />,
     children: [
       {
-        index: true,
+        path: '',
         element: <Index />,
       },
       {
@@ -29,11 +38,11 @@ const router = createBrowserRouter([
         path: 'users/:userId',
         element: <User />,
       },
+      {
+        path: 'blogs/:blogId',
+        element: <BlogPage />,
+      },
     ],
-  },
-  {
-    path: '/login',
-    element: <LogInForm />,
   },
 ]);
 
