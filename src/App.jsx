@@ -3,6 +3,7 @@ import LogOutButton from './components/LogOutButton';
 import { useLocalStorage } from './hooks';
 import { Outlet, redirect, useLoaderData } from 'react-router-dom';
 import blogService from './services/blogs';
+import Navigation from './components/Navigation';
 
 export const loader = (queryClient) => async () => {
   console.log('load app');
@@ -33,6 +34,7 @@ const App = () => {
 
   return (
     <>
+      <Navigation />
       <h2>blogs</h2>
       <Notification />
       <div>
