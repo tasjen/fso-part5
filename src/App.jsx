@@ -6,7 +6,6 @@ import blogService from './services/blogs';
 import Navigation from './components/Navigation';
 
 export const loader = (queryClient) => async () => {
-  console.log('load app');
   const loggedUser =
     queryClient.getQueryData(['user']) ??
     (await queryClient.fetchQuery({
@@ -17,7 +16,6 @@ export const loader = (queryClient) => async () => {
   if (!loggedUser) return redirect('/login');
 
   if (!queryClient.getQueryData(['blogs'])) {
-    console.log('fetch blogs');
     await queryClient.fetchQuery({
       queryKey: ['blogs'],
       queryFn: blogService.getAll,
@@ -30,8 +28,6 @@ export const loader = (queryClient) => async () => {
 const App = () => {
   const user = useLoaderData();
 
-  console.log('render app');
-
   return (
     <>
       <Navigation />
@@ -41,7 +37,7 @@ const App = () => {
         {user?.name} logged in
         <LogOutButton />
       </div>
-      <Outlet log={console.log('render outlet')} />
+      <Outlet />
     </>
   );
 };

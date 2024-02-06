@@ -39,4 +39,16 @@ const update = async (blogObject) => {
   return res.data;
 };
 
-export default { getToken, getAll, create, remove, update };
+const addComment = async ({ blogId, comment }) => {
+  const config = {
+    headers: { Authorization: `Bearer ${getToken()}` },
+  };
+  const res = await axios.post(
+    `${baseUrl}/${blogId}/comments`,
+    { comment },
+    config
+  );
+  return res.data;
+};
+
+export default { getToken, getAll, create, remove, update, addComment };

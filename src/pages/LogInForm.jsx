@@ -4,7 +4,6 @@ import { useInput, useUserMutation } from '../hooks';
 import { useLocalStorage } from '../hooks';
 
 export const loader = (queryClient) => async () => {
-  console.log('load login');
   const loggedUser =
     queryClient.getQueryData(['user']) ??
     (await queryClient.fetchQuery({
@@ -29,7 +28,6 @@ const LogInForm = () => {
     navigate('/');
   };
 
-  console.log('render login');
   return (
     <form onSubmit={handleLogIn} method="post" action="/login">
       <h1>log in to application</h1>

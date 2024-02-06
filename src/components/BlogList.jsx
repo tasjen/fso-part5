@@ -5,7 +5,7 @@ const BlogList = () => {
   const { blogs } = useBlogsQuery();
 
   return (
-    <ul>
+    <ul id="blog-list">
       {blogs
         ?.sort((a, b) => b.likes - a.likes)
         .map((blog) => (

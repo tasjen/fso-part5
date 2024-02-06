@@ -27,10 +27,7 @@ export const useUserQuery = () => {
     error,
   } = useQuery({
     queryKey: ['user'],
-    queryFn: () => {
-      console.log('query user');
-      return loggedUser.getItem();
-    },
+    queryFn: loggedUser.getItem,
     retry: false,
     refetchOnWindowFocus: false,
   });
@@ -118,7 +115,19 @@ export const useBlogsMutation = () => {
     onError: (err) => showNotification(err),
   });
 
-  return { addBlog, updateBlog, removeBlog };
+  const { mutateAsync: commentBlog } = useMutation({
+    mutationFn: blogService.addComment,
+    onSuccess: (blogObject) => {
+      const blogs = queryClient.getQueryData(['blogs']);
+      queryClient.setQueryData(
+        ['blogs'],
+        blogs.map((e) => (e.id !== blogObject.id ? e : blogObject))
+      );
+    },
+    onError: (err) => showNotification(err),
+  });
+
+  return { addBlog, updateBlog, removeBlog, commentBlog };
 };
 
 export const useLocalStorage = (key) => {
