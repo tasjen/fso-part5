@@ -1,9 +1,9 @@
 import { Link } from 'react-router-dom';
-import { useUserQuery } from '../hooks';
 import LogOutButton from './LogOutButton';
+import { useLocalStorage } from '../hooks';
 
 const Navigation = () => {
-  const { user } = useUserQuery();
+  const user = useLocalStorage('loggedUser').getItem();
   return (
     <nav>
       <Link to="/">blogs</Link> <Link to="/users">users</Link> {user?.name}{' '}

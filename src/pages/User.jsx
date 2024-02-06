@@ -1,10 +1,9 @@
-import { useQueryClient } from '@tanstack/react-query';
 import { useParams } from 'react-router-dom';
+import { useBlogsQuery } from '../hooks';
 
 const User = () => {
-  const queryClient = useQueryClient();
   const { userId } = useParams();
-  const blogs = queryClient.getQueryData(['blogs']);
+  const { blogs } = useBlogsQuery();
   const user = blogs.find((e) => e.user.id === userId)?.user;
 
   return user ? (

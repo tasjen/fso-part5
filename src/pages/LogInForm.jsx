@@ -1,31 +1,35 @@
 import { redirect, useNavigate } from 'react-router-dom';
 import Notification from '../components/Notification';
-import { useInput, useUserMutation } from '../hooks';
+import { useInput } from '../hooks';
 import { useLocalStorage } from '../hooks';
+import { logIn } from '../services/login';
+import NotificationContext from '../context/NotificationContext';
+import { useContext } from 'react';
 
-export const loader = (queryClient) => async () => {
-  const loggedUser =
-    queryClient.getQueryData(['user']) ??
-    (await queryClient.fetchQuery({
-      queryKey: ['user'],
-      queryFn: useLocalStorage('loggedUser').getItem,
-    }));
-  return loggedUser ? redirect('/') : null;
+export const loader = () => {
+  const user = useLocalStorage('loggedUser').getItem();
+  return user ? redirect('/') : null;
 };
 
 const LogInForm = () => {
   const username = useInput('text');
   const password = useInput('password');
-  const { logIn } = useUserMutation();
   const navigate = useNavigate();
+  const { showNotification } = useContext(NotificationContext);
 
   const handleLogIn = async (event) => {
     event.preventDefault();
-    await logIn({
-      username: username.value,
-      password: password.value,
-    });
-    navigate('/');
+    try {
+      const user = await logIn({
+        username: username.value,
+        password: password.value,
+      });
+      const loggedUser = useLocalStorage('loggedUser');
+      loggedUser.setItem(user);
+      navigate('/');
+    } catch (err) {
+      showNotification(err);
+    }
   };
 
   return (

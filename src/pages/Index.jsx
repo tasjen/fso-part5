@@ -5,6 +5,7 @@ import BlogList from '../components/BlogList';
 const Index = () => {
   return (
     <div>
+      <h2>blogs</h2>
       <Togglable buttonLabel="create new blog">
         <BlogForm />
       </Togglable>

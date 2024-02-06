@@ -1,7 +1,6 @@
 import { useContext, useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import blogService from '../services/blogs';
-import loginService from '../services/login';
 import NotificationContext from '../context/NotificationContext';
 
 export const useInput = (type) => {
@@ -18,49 +17,6 @@ export const useInput = (type) => {
   return { type, value, onChange, onReset };
 };
 
-export const useUserQuery = () => {
-  const loggedUser = useLocalStorage('loggedUser');
-  const {
-    data: user,
-    isLoading,
-    isError,
-    error,
-  } = useQuery({
-    queryKey: ['user'],
-    queryFn: loggedUser.getItem,
-    retry: false,
-    refetchOnWindowFocus: false,
-  });
-
-  return { user, isLoading, isError, error };
-};
-
-export const useUserMutation = () => {
-  const queryClient = useQueryClient();
-  const loggedUser = useLocalStorage('loggedUser');
-  const { showNotification } = useContext(NotificationContext);
-
-  const { mutateAsync: logIn } = useMutation({
-    mutationFn: loginService.login,
-    onSuccess: (user) => {
-      loggedUser.setItem(user);
-      queryClient.invalidateQueries(['user']);
-    },
-    onError: (err) => showNotification(err),
-  });
-
-  const { mutateAsync: logOut } = useMutation({
-    mutationFn: loggedUser.removeItem,
-    onSuccess: () => {
-      queryClient.resetQueries(['blogs']);
-      queryClient.setQueryData(['user'], null);
-    },
-    onError: (err) => showNotification(err),
-  });
-
-  return { logIn, logOut };
-};
-
 export const useBlogsQuery = () => {
   const {
     data: blogs,
@@ -69,7 +25,11 @@ export const useBlogsQuery = () => {
     error,
   } = useQuery({
     queryKey: ['blogs'],
-    queryFn: blogService.getAll,
+    queryFn: () => {
+      console.log('fetch blogs');
+      return blogService.getAll();
+    },
+    initialData: [],
   });
 
   return { blogs, isLoading, isError, error };

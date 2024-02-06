@@ -1,10 +1,9 @@
 import { useMemo } from 'react';
-import { useQueryClient } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
+import { useBlogsQuery } from '../hooks';
 
 const Users = () => {
-  const queryClient = useQueryClient();
-  const blogs = queryClient.getQueryData(['blogs']) || [];
+  const { blogs } = useBlogsQuery();
 
   const users = useMemo(
     () =>

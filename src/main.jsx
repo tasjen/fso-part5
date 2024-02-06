@@ -18,7 +18,7 @@ const router = createBrowserRouter([
   {
     path: '/login',
     element: <LogInForm />,
-    loader: loginLoader(queryClient),
+    loader: loginLoader,
   },
   {
     path: '/',
