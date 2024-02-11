@@ -4,9 +4,16 @@ import { v1 } from 'uuid';
 
 const BlogPage = () => {
   const { blogId } = useParams();
-  const { blogs } = useBlogsQuery();
-  const commentInput = useInput();
+  const { blogs, isLoading, isError, error } = useBlogsQuery();
   const { updateBlog, commentBlog } = useBlogsMutation();
+  const commentInput = useInput();
+
+  if (isLoading) {
+    return <span>Loading...</span>;
+  }
+  if (isError) {
+    return <span>Error: {error.message}</span>;
+  }
 
   const blog = blogs.find((e) => e.id === blogId);
 
@@ -19,8 +26,9 @@ const BlogPage = () => {
     commentBlog({ blogId, comment: commentInput.value });
     commentInput.onReset();
   };
+
   return (
-    <div>
+    <div className="m-4">
       <h1>{blog.title}</h1>
       <a href={blog.url}>{blog.url}</a>
       <p>

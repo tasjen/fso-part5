@@ -29,7 +29,6 @@ export const useBlogsQuery = () => {
       console.log('fetch blogs');
       return blogService.getAll();
     },
-    initialData: [],
   });
 
   return { blogs, isLoading, isError, error };

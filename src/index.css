@@ -1,4 +1,8 @@
-#blog-list {
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* #blog-list {
   list-style: none;
   padding-left: 0;
 }
@@ -38,4 +42,4 @@ nav {
   margin-bottom: 5px;
   padding-left: 2px;
   padding-top: 10px;
-}
+} */

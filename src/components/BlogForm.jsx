@@ -27,24 +27,53 @@ const BlogForm = () => {
   };
 
   return (
-    <>
-      <h2>create new</h2>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label htmlFor="title">title</label>
-          <input id="title" {...title} placeholder="title" />
+    <div>
+      <h2 className="font-bold my-2">Create new</h2>
+      <form onSubmit={handleSubmit} className="space-y-2">
+        <div className="flex max-w-xs">
+          <label htmlFor="title" className="mr-auto">
+            Title:
+          </label>
+          <input
+            id="title"
+            {...title}
+            placeholder="title"
+            className="rounded-s"
+          />
         </div>
-        <div>
-          <label htmlFor="author">author</label>
-          <input id="author" {...author} placeholder="author" />
+        <div className="flex max-w-xs">
+          <label htmlFor="author" className="mr-auto">
+            Author:
+          </label>
+          <input
+            id="author"
+            {...author}
+            placeholder="author"
+            className="rounded-s"
+          />
         </div>
-        <div>
-          <label htmlFor="url">url</label>
-          <input id="url" {...url} placeholder="url" />
+        <div className="flex max-w-xs">
+          <label htmlFor="url" className="mr-auto">
+            URL:
+          </label>
+          <input id="url" {...url} placeholder="url" className="rounded-s" />
         </div>
-        <button type="submit">create</button>
+        <div className="flex justify-around max-w-xs">
+          <button
+            type="submit"
+            className="bg-gray-500 hover:bg-gray-400 text-gray-100 font-bold py-2 px-4 rounded"
+          >
+            create
+          </button>
+          <button
+            onClick={toggleVisible}
+            className="bg-gray-500 hover:bg-gray-400 text-gray-100 font-bold py-2 px-4 rounded"
+          >
+            cancel
+          </button>
+        </div>
       </form>
-    </>
+    </div>
   );
 };
 

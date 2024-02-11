@@ -7,7 +7,7 @@ const User = () => {
   const user = blogs.find((e) => e.user.id === userId)?.user;
 
   return user ? (
-    <>
+    <div className="m-4">
       <h2>{user.name}</h2>
       <b>added blogs</b>
       <ul>
@@ -17,7 +17,7 @@ const User = () => {
             <li key={b.id}>{b.title}</li>
           ))}
       </ul>
-    </>
+    </div>
   ) : (
     <h1>user not found</h1>
   );

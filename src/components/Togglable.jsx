@@ -18,10 +18,14 @@ const Togglable = (props) => {
           <VisibleContext.Provider value={{ toggleVisible }}>
             {props.children}
           </VisibleContext.Provider>
-          <button onClick={toggleVisible}>cancel</button>
         </div>
       ) : (
-        <button onClick={toggleVisible}>{props.buttonLabel}</button>
+        <button
+          onClick={toggleVisible}
+          className="bg-gray-500 hover:bg-gray-400 text-gray-100 font-bold py-2 px-4 rounded"
+        >
+          {props.buttonLabel}
+        </button>
       )}
     </div>
   );
